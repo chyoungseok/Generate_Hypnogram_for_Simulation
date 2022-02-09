@@ -1,0 +1,33 @@
+close all; clear; clc
+% function output = gen2DHypnogram()
+
+epoch_size = 30; % sampling rate=1 --> epoch_size=30은 30초를 의미
+template = zeros(200, 1000);
+stage = [1 2 3 4 5];
+stg_size = 30; % stage 하나당 30
+
+%% x1
+
+x1 = template;
+i = 1;
+stage_stack = [];
+while 5+epoch_size+epoch_size*(i-1) < size(template, 2)
+    now_stage = stage(randi(5));
+    stage_stack = [stage_stack, now_stage];
+    x1(5+stg_size*now_stage, 5+epoch_size*(i-1):5+epoch_size+epoch_size*(i-1)) = 1;
+    if i>1
+        if stage_stack(i-1) > stage_stack(i)
+            x1(5+stg_size*stage_stack(i):5+stg_size*stage_stack(i-1), 5+epoch_size*(i-1))=1;
+        else
+            x1(stg_size*stage_stack(i-1):stg_size*stage_stack(i), 5+epoch_size*(i-1))=1;
+        end
+    end
+    i = i+1;
+end
+
+
+
+figure;
+imshow(x1, 'InitialMagnification', 1000);
+
+% end
